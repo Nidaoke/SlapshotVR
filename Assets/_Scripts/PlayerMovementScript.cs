@@ -6,6 +6,7 @@ public class PlayerMovementScript : MonoBehaviour {
     public enum DirectionToMove { forward, back, still }; 
 	public DirectionToMove directionToMove; //Should player move forward or back
     public enum ColorOfPlayer { red, blue }; public ColorOfPlayer colorOfPlayer;
+    public enum SideOfField { front, back }; public SideOfField sideOfField;
     public int lastWaypoint, nextWaypoint;
     public Transform[] waypoints; //Set Waypoints for player to move along
     public float speed, turningSpeed, thrust;
@@ -17,7 +18,7 @@ public class PlayerMovementScript : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Puck")
+        /*if (other.gameObject.tag == "Puck")
         {
             Debug.Log("Collided w/ puck!");
             hasPuck = true;
@@ -25,52 +26,55 @@ public class PlayerMovementScript : MonoBehaviour {
             puck.transform.position = puckSpot.transform.position;
             puck.transform.parent = gameObject.transform;
             puck.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        }*/
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        if(other.gameObject.tag == "Puck")
+        {
+            if(GameObject.FindGameObjectWithTag("UIText") != null)
+                GameObject.FindGameObjectWithTag("UIText").GetComponent<UIController>().isPlayerTouching = true;
+            hasPuck = true;
+            puck = other.gameObject;
         }
     }
 
-//	void OnTriggerStay(Collider other)
-//	{
-//		if (other.gameObject.tag == "Puck")
-//		{
-//			Debug.Log("Collided w/ puck!");
-//			hasPuck = true;
-//			puck = other.gameObject;
-//			puck.transform.position = puckSpot.transform.position;
-//			puck.transform.parent = gameObject.transform;
-//			puck.GetComponent<Rigidbody>().velocity = Vector3.zero;
-//		}
-//	}
-
     void OnTriggerExit(Collider other)
     {
+
         if (other.gameObject.tag == "Puck")
+        {
+            if (GameObject.FindGameObjectWithTag("UIText") != null)
+                GameObject.FindGameObjectWithTag("UIText").GetComponent<UIController>().isPlayerTouching = false;
+            hasPuck = false;
+            puck = null;
+        }
+
+        /*if (other.gameObject.tag == "Puck")
         {
             Debug.Log("Lost Puck");
 			puck.transform.parent = null;
             hasPuck = false;
             puck = null;
-        }
+        }*/
     }
 
-	public void PublichShoot()
-	{
-		StartCoroutine(Shoot());
-	}
-
-    IEnumerator Shoot()
+    void Update()
     {
-        //keepPuckStill = false;
-        if(puck != null)
-        {
-            puck.transform.parent = null;
-            puck.GetComponent<Rigidbody>().AddForce(transform.forward * thrust*2f);
-            puck.GetComponent<Rigidbody>().AddForce(transform.up * (thrust / 5f));
-            puck.GetComponent<Rigidbody>().AddForce(transform.right * (thrust / 11));
-            puck = null;
-            hasPuck = false;
-        }
+        if (hasPuck && (Input.GetKeyDown(KeyCode.Space) || (Input.GetAxis("LeftTrigger") > .5f && lastLeftTrigger < .5f)))
+            Shoot();
 
-        yield return new WaitForSeconds(0);
+        lastRightTrigger = Input.GetAxis("RightTrigger");
+        lastLeftTrigger = Input.GetAxis("LeftTrigger");
+    }
+
+    void Shoot()
+    {
+        //puck.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * thrust);
+        puck.GetComponent<Rigidbody>().AddForce(transform.forward * thrust);
+        puck.GetComponent<Rigidbody>().AddForce(transform.up * (thrust / 5f));
+        puck.GetComponent<Rigidbody>().AddForce(transform.right * (thrust / 11));
     }
 
 	void FixedUpdate () {
@@ -79,30 +83,13 @@ public class PlayerMovementScript : MonoBehaviour {
 
         Vector3 forwardSpot = puckSpot.transform.TransformDirection(new Vector3((50 / 11), 0, 50));
 
-        if (activePlayer)
-        {
-            Debug.DrawRay(new Vector3(puckSpot.transform.position.x, puckSpot.transform.position.y + .1f, puckSpot.transform.position.z), forwardSpot, Color.green);
-            if (Input.GetKeyDown(KeyCode.Space) || (Input.GetAxis("RightTrigger") > .3f && lastRightTrigger < .3f))
-            {
-                if (hasPuck && puck != null)
-                {
-                    StartCoroutine(Shoot());
-                }
-            }
-        }
-        else
-            Debug.DrawRay(new Vector3(puckSpot.transform.position.x, puckSpot.transform.position.y + .1f, puckSpot.transform.position.z), forwardSpot, Color.red);
-
-		if (colorOfPlayer == ColorOfPlayer.red) //Make sure rotation doesn't go -
+		if (sideOfField == SideOfField.front) //Make sure rotation doesn't go -
         {
             if (transform.localEulerAngles.y > 360)
                 transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, (transform.localEulerAngles.y - 360), transform.localEulerAngles.z);
             else if (transform.localEulerAngles.y < 0)
                 transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, (transform.localEulerAngles.y + 360), transform.localEulerAngles.z);
         }
-
-        lastRightTrigger = Input.GetAxis("RightTrigger");
-        lastLeftTrigger = Input.GetAxis("LeftTrigger");
 
 	}
 
@@ -124,7 +111,7 @@ public class PlayerMovementScript : MonoBehaviour {
                 transform.Rotate(Vector3.down * Time.deltaTime * turningSpeed * Mathf.Abs(Input.GetAxis("Horizontal")));
             }
 
-            if(colorOfPlayer == ColorOfPlayer.blue) //Set Turned Around if facing other direction
+            /*if(sideOfField == SideOfField.back) //Set Turned Around if facing other direction
             {
                 if (transform.localRotation.eulerAngles.y > 270 || transform.localRotation.eulerAngles.y < 90)
                     turnedAround = true;
@@ -136,7 +123,7 @@ public class PlayerMovementScript : MonoBehaviour {
                     turnedAround = true;
                 else
                     turnedAround = false;
-            }
+            }*/
         }
     }
 

@@ -80,7 +80,7 @@ public class AITeamController : MonoBehaviour
 					Debug.DrawRay(mClosestTeamMate.puckSpot.position, mClosestTeamMate.puckSpot.TransformDirection (Vector3.forward) * hit.distance, Color.yellow);
 					Debug.Log("Goal In Sight!");
 				           
-					mClosestTeamMate.PublichShoot();
+					//mClosestTeamMate.PublichShoot();
 					StartCoroutine(PuckShotCooldown());
 				}
 				else
