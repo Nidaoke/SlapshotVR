@@ -18,15 +18,12 @@ public class PlayerMovementScript : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        /*if (other.gameObject.tag == "Puck")
+        if (!activePlayer)
         {
-            Debug.Log("Collided w/ puck!");
-            hasPuck = true;
-            puck = other.gameObject;
-            puck.transform.position = puckSpot.transform.position;
-            puck.transform.parent = gameObject.transform;
-            puck.GetComponent<Rigidbody>().velocity = Vector3.zero;
-        }*/
+            activePlayer = true;
+            GameObject.FindGameObjectWithTag("CameraHolder").GetComponent<CameraScript>().StopCoroutine("WaitAndReposition");
+            GameObject.FindGameObjectWithTag("CameraHolder").GetComponent<CameraScript>().thingToFollow = gameObject;
+        }
     }
 
     void OnTriggerStay(Collider other)
@@ -62,6 +59,12 @@ public class PlayerMovementScript : MonoBehaviour {
 
     void Update()
     {
+        if (activePlayer)
+        {
+            Vector3 forwardSpot = puckSpot.transform.TransformDirection(new Vector3(thrust / 11, -2, thrust));
+            Debug.DrawRay(new Vector3(puckSpot.transform.position.x, puckSpot.transform.position.y - 2f,
+                puckSpot.transform.position.z), forwardSpot, Color.green);
+        }
         if (hasPuck && (Input.GetKeyDown(KeyCode.Space) || (Input.GetAxis("LeftTrigger") > .5f && lastLeftTrigger < .5f)))
             Shoot();
 
@@ -71,7 +74,8 @@ public class PlayerMovementScript : MonoBehaviour {
 
     void Shoot()
     {
-        //puck.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * thrust);
+        GameObject.FindGameObjectWithTag("CameraHolder").GetComponent<CameraScript>().PuckHasBeenShot(puck);
+        activePlayer = false;
         puck.GetComponent<Rigidbody>().AddForce(transform.forward * thrust);
         puck.GetComponent<Rigidbody>().AddForce(transform.up * (thrust / 5f));
         puck.GetComponent<Rigidbody>().AddForce(transform.right * (thrust / 11));
@@ -109,6 +113,14 @@ public class PlayerMovementScript : MonoBehaviour {
             else if (Input.GetAxis("Horizontal") < -.01f)
             {
                 transform.Rotate(Vector3.down * Time.deltaTime * turningSpeed * Mathf.Abs(Input.GetAxis("Horizontal")));
+            }
+
+            if(sideOfField == SideOfField.front)
+            {
+                turnedAround = true;
+            }else
+            {
+                turnedAround = false;
             }
 
             /*if(sideOfField == SideOfField.back) //Set Turned Around if facing other direction
@@ -180,7 +192,7 @@ public class PlayerMovementScript : MonoBehaviour {
 
     void GetInputForMovement() //Get input for moving
     {
-        if (!turnedAround)
+        if (turnedAround)
         {
             if (Input.GetAxis("Vertical") > .2f) //Set the direction to move based on input
                 directionToMove = DirectionToMove.forward;

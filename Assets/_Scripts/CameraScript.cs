@@ -5,15 +5,26 @@ public class CameraScript : MonoBehaviour {
 
     //FollowPlayer
 
-    public GameObject playerToFollow;
+    public GameObject thingToFollow;
     public Vector3 positionOffset;
     public float moveSpeed, rotSpeed;
 
+    public void PuckHasBeenShot(GameObject puck)
+    {
+        thingToFollow = puck;
+        moveSpeed = 5;
+    }
+
+    public IEnumerator WaitAndReposition()
+    {
+        yield return new WaitForSeconds(0);
+    }
+
     void Update()
     {
-        if(transform.position != (playerToFollow.transform.position + positionOffset))
+        if(transform.position != (thingToFollow.transform.position + positionOffset))
         {
-            transform.position = Vector3.Lerp(transform.position, playerToFollow.transform.position + positionOffset, Time.deltaTime * moveSpeed);
+            transform.position = Vector3.Lerp(transform.position, thingToFollow.transform.position + positionOffset, Time.deltaTime * moveSpeed);
         }
     }
     /*public PlayerMovementScript[] players;
