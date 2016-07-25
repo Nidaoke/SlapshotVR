@@ -73,7 +73,7 @@ public class PlayerMovementScript : MonoBehaviour {
         yield return new WaitForSeconds(0);
     }
 
-	void Update () {
+	void FixedUpdate () {
         Move();
         Turn();
 
