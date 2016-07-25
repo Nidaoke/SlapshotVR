@@ -1,0 +1,133 @@
+fileFormatVersion: 2
+guid: 623790ba6a9544f4dbece834ab45c767
+timeCreated: 1465522091
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: BLUE1
+    100002: BLUE2
+    100004: BLUE3
+    100006: BLUE4
+    100008: BLUE5
+    100010: BLUE_GOALKEEPER
+    100012: RED1
+    100014: RED2
+    100016: RED3
+    100018: RED4
+    100020: RED5
+    100022: RED_GOALKEEPER
+    100024: //RootNode
+    400000: BLUE1
+    400002: BLUE2
+    400004: BLUE3
+    400006: BLUE4
+    400008: BLUE5
+    400010: BLUE_GOALKEEPER
+    400012: RED1
+    400014: RED2
+    400016: RED3
+    400018: RED4
+    400020: RED5
+    400022: RED_GOALKEEPER
+    400024: //RootNode
+    2300000: BLUE1
+    2300002: BLUE2
+    2300004: BLUE3
+    2300006: BLUE4
+    2300008: BLUE5
+    2300010: BLUE_GOALKEEPER
+    2300012: RED1
+    2300014: RED2
+    2300016: RED3
+    2300018: RED4
+    2300020: RED5
+    2300022: RED_GOALKEEPER
+    3300000: BLUE1
+    3300002: BLUE2
+    3300004: BLUE3
+    3300006: BLUE4
+    3300008: BLUE5
+    3300010: BLUE_GOALKEEPER
+    3300012: RED1
+    3300014: RED2
+    3300016: RED3
+    3300018: RED4
+    3300020: RED5
+    3300022: RED_GOALKEEPER
+    4300000: RED_GOALKEEPER
+    4300002: BLUE_GOALKEEPER
+    4300004: BLUE5
+    4300006: BLUE1
+    4300008: RED5
+    4300010: RED4
+    4300012: BLUE4
+    4300014: BLUE3
+    4300016: BLUE2
+    4300018: RED1
+    4300020: RED3
+    4300022: RED2
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

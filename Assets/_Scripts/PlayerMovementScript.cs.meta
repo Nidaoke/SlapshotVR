@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 9e79e4295a2ddd947ba17ddeaa8082b0
+timeCreated: 1465676840
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - puckTest: {fileID: 164630, guid: 062a4c8b7d979db4cb2c8ad639350a49, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
