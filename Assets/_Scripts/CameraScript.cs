@@ -6,6 +6,7 @@ public class CameraScript : MonoBehaviour {
     //FollowPlayer
 
     public GameObject thingToFollow;
+    public PlayerMovementScript[] players;
     public Vector3 positionOffset;
     public float moveSpeed, rotSpeed;
 
@@ -13,11 +14,32 @@ public class CameraScript : MonoBehaviour {
     {
         thingToFollow = puck;
         moveSpeed = 5;
+        StartCoroutine(WaitAndReposition());
     }
 
     public IEnumerator WaitAndReposition()
     {
-        yield return new WaitForSeconds(0);
+        yield return new WaitForSeconds(2);
+        if(thingToFollow.tag == "Puck")
+        {
+            GameObject newPlayerToGoTo = null;
+            float minDist = Mathf.Infinity;
+
+            foreach(PlayerMovementScript player in players)
+            {
+                float dist = Vector3.Distance(player.gameObject.transform.position, transform.position);
+                if(dist < minDist)
+                {
+                    newPlayerToGoTo = player.gameObject;
+                    minDist = dist;
+                    Debug.Log("Set newplayertogoto to " + newPlayerToGoTo);
+                }
+            }
+
+            thingToFollow = newPlayerToGoTo;
+            thingToFollow.GetComponent<PlayerMovementScript>().activePlayer = true;
+        }
+
     }
 
     void Update()
@@ -25,6 +47,11 @@ public class CameraScript : MonoBehaviour {
         if(transform.position != (thingToFollow.transform.position + positionOffset))
         {
             transform.position = Vector3.Lerp(transform.position, thingToFollow.transform.position + positionOffset, Time.deltaTime * moveSpeed);
+        }
+
+        if (players.Length == 0)
+        {
+            players = GameObject.FindObjectsOfType<PlayerMovementScript>();
         }
     }
     /*public PlayerMovementScript[] players;
