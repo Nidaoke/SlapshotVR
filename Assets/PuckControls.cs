@@ -35,7 +35,7 @@ public class PuckControls : MonoBehaviour
                 }
             }
         }
-        m_Players[m_Player].GetComponent<PlayerControls>().m_ActivePlayer = true;
-        CameraManagement.inst.FollowPlayer(m_Players[m_Player]);
+        //m_Players[m_Player].GetComponent<PlayerControls>().m_ActivePlayer = true;
+        //CameraManagement.inst.FollowPlayer(m_Players[m_Player]);
     }
 }
