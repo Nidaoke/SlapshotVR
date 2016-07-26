@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerMovementScript : MonoBehaviour {
+public class PlayerMovementScript : MonoBehaviour
+{
 
-    public enum DirectionToMove { forward, back, still }; 
-	public DirectionToMove directionToMove; //Should player move forward or back
+    public enum DirectionToMove { forward, back, still };
+    public DirectionToMove directionToMove; //Should player move forward or back
     public enum ColorOfPlayer { red, blue }; public ColorOfPlayer colorOfPlayer;
     public enum SideOfField { front, back }; public SideOfField sideOfField;
     public int lastWaypoint, nextWaypoint;
     public Transform[] waypoints; //Set Waypoints for player to move along
     public float speed, turningSpeed, thrust;
     public bool activePlayer, turnedAround, hasPuck, keepPuckStill;
-	public bool mAIControlled;
+    public bool mAIControlled;
     public GameObject puck; public Transform puckSpot;
+    Vector3 forwardSpot;
 
     float lastRightTrigger, lastLeftTrigger;
 
@@ -28,9 +30,9 @@ public class PlayerMovementScript : MonoBehaviour {
 
     void OnTriggerStay(Collider other)
     {
-        if(other.gameObject.tag == "Puck")
+        if (other.gameObject.tag == "Puck")
         {
-            if(GameObject.FindGameObjectWithTag("UIText") != null)
+            if (GameObject.FindGameObjectWithTag("UIText") != null)
                 GameObject.FindGameObjectWithTag("UIText").GetComponent<UIController>().isPlayerTouching = true;
             hasPuck = true;
             puck = other.gameObject;
@@ -57,11 +59,23 @@ public class PlayerMovementScript : MonoBehaviour {
         }*/
     }
 
-    void Update()
+    void Shoot()
     {
+        GameObject.FindGameObjectWithTag("CameraHolder").GetComponent<CameraScript>().PuckHasBeenShot(puck);
+        activePlayer = false;
+        puck.GetComponent<Rigidbody>().AddForce(transform.forward * thrust);
+        //puck.GetComponent<Rigidbody>().AddForce(transform.up * (thrust / 5f));
+        //puck.GetComponent<Rigidbody>().AddForce(transform.right * (thrust / 11));
+    }
+
+    void FixedUpdate()
+    {
+        Move();
+        Turn();
+
         if (activePlayer)
         {
-            Vector3 forwardSpot = puckSpot.transform.TransformDirection(new Vector3(thrust / 11, -2, thrust));
+            forwardSpot = puckSpot.transform.TransformDirection(new Vector3(thrust / 11, -2, thrust));
             Debug.DrawRay(new Vector3(puckSpot.transform.position.x, puckSpot.transform.position.y - 2f,
                 puckSpot.transform.position.z), forwardSpot, Color.green);
         }
@@ -70,24 +84,11 @@ public class PlayerMovementScript : MonoBehaviour {
 
         lastRightTrigger = Input.GetAxis("RightTrigger");
         lastLeftTrigger = Input.GetAxis("LeftTrigger");
-    }
 
-    void Shoot()
-    {
-        GameObject.FindGameObjectWithTag("CameraHolder").GetComponent<CameraScript>().PuckHasBeenShot(puck);
-        activePlayer = false;
-        puck.GetComponent<Rigidbody>().AddForce(transform.forward * thrust);
-        puck.GetComponent<Rigidbody>().AddForce(transform.up * (thrust / 5f));
-        puck.GetComponent<Rigidbody>().AddForce(transform.right * (thrust / 11));
-    }
 
-	void FixedUpdate () {
-        Move();
-        Turn();
+        forwardSpot = puckSpot.transform.TransformDirection(new Vector3((50 / 11), 0, 50));
 
-        Vector3 forwardSpot = puckSpot.transform.TransformDirection(new Vector3((50 / 11), 0, 50));
-
-		if (sideOfField == SideOfField.front) //Make sure rotation doesn't go -
+        if (sideOfField == SideOfField.front) //Make sure rotation doesn't go -
         {
             if (transform.localEulerAngles.y > 360)
                 transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, (transform.localEulerAngles.y - 360), transform.localEulerAngles.z);
@@ -95,7 +96,7 @@ public class PlayerMovementScript : MonoBehaviour {
                 transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, (transform.localEulerAngles.y + 360), transform.localEulerAngles.z);
         }
 
-	}
+    }
 
     void Turn()
     {
@@ -115,10 +116,11 @@ public class PlayerMovementScript : MonoBehaviour {
                 transform.Rotate(Vector3.down * Time.deltaTime * turningSpeed * Mathf.Abs(Input.GetAxis("Horizontal")));
             }
 
-            if(sideOfField == SideOfField.front)
+            if (sideOfField == SideOfField.front)
             {
                 turnedAround = true;
-            }else
+            }
+            else
             {
                 turnedAround = false;
             }
@@ -148,7 +150,7 @@ public class PlayerMovementScript : MonoBehaviour {
         switch (directionToMove) //Call MoveToPoint depending on our direction to move
         {
             case DirectionToMove.forward:
-				
+
                 MoveToPoint(waypoints[nextWaypoint]);
                 break;
             case DirectionToMove.back:
@@ -159,14 +161,15 @@ public class PlayerMovementScript : MonoBehaviour {
                 break;
         }
 
-        if(transform.position == waypoints[nextWaypoint].position) //Switch waypoints, allowing us to move on curves
+        if (transform.position == waypoints[nextWaypoint].position) //Switch waypoints, allowing us to move on curves
         {
-            if (nextWaypoint < waypoints.Length-1)
+            if (nextWaypoint < waypoints.Length - 1)
             {
                 lastWaypoint++;
                 nextWaypoint++;
             }
-        }else if(transform.position == waypoints[lastWaypoint].position)
+        }
+        else if (transform.position == waypoints[lastWaypoint].position)
         {
             if (lastWaypoint > 0)
             {
@@ -178,15 +181,15 @@ public class PlayerMovementScript : MonoBehaviour {
 
     void MoveToPoint(Transform point) //Move toward Waypoint
     {
-		float step = 0f;
-		if(mAIControlled)
-		{
-			step = speed * Time.deltaTime;
-		}
-		else if(activePlayer)
-		{
-        	step = speed * Time.deltaTime * Mathf.Abs(Input.GetAxis("Vertical"));
-		}
+        float step = 0f;
+        if (mAIControlled)
+        {
+            step = speed * Time.deltaTime;
+        }
+        else if (activePlayer)
+        {
+            step = speed * Time.deltaTime * Mathf.Abs(Input.GetAxis("Vertical"));
+        }
         transform.position = Vector3.MoveTowards(transform.position, point.position, step);
     }
 
@@ -200,7 +203,8 @@ public class PlayerMovementScript : MonoBehaviour {
                 directionToMove = DirectionToMove.back;
             else
                 directionToMove = DirectionToMove.still;
-        }else
+        }
+        else
         {
             if (Input.GetAxis("Vertical") > .2f) //Move in the opposite direction if turned around
                 directionToMove = DirectionToMove.back;
