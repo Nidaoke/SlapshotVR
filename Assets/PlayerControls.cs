@@ -20,6 +20,7 @@ public class PlayerControls : MonoBehaviour
 
     // Game variables
     public bool m_ActivePlayer;
+    public bool m_Goalie;
     GameObject m_Puck;
     public GameObject m_CollidingPuck;
     public GameObject m_PuckSpot;
@@ -42,6 +43,12 @@ public class PlayerControls : MonoBehaviour
             Rotation();
             Shooting();
             GrabPuck();
+        }
+
+        if (m_Goalie)
+        {
+            GoalieMovement();
+            Rotation();
         }
     }
 
@@ -83,30 +90,65 @@ public class PlayerControls : MonoBehaviour
 
     void GetInputForMovement()
     {
-        if (Input.GetAxis("Vertical") > .2f)
-            m_directionToMove = DirectionToMove.Forward;
-        else if (Input.GetAxis("Vertical") < -.2f)
-            m_directionToMove = DirectionToMove.Back;
-        else
-            m_directionToMove = DirectionToMove.Stop;
+        if (m_ActivePlayer)
+        {
+            if (OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).y > .2f)
+                m_directionToMove = DirectionToMove.Forward;
+            else if (OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).y < -.2f)
+                m_directionToMove = DirectionToMove.Back;
+            else
+                m_directionToMove = DirectionToMove.Stop;
+        }
+
+        if (m_Goalie)
+        {
+            if (OVRInput.Get(OVRInput.RawAxis2D.RThumbstick).x > .2f)
+                m_directionToMove = DirectionToMove.Forward;
+            else if (OVRInput.Get(OVRInput.RawAxis2D.RThumbstick).x < -.2f)
+                m_directionToMove = DirectionToMove.Back;
+            else
+                m_directionToMove = DirectionToMove.Stop;
+        }
     }
 
     void MoveToPoint(Transform point) //Move toward Waypoint
     {
         float step = 0f;
-        step = m_Speed * Time.deltaTime * Mathf.Abs(Input.GetAxis("Vertical"));
+        if (m_ActivePlayer)
+        {
+            step = m_Speed * Time.deltaTime * Mathf.Abs(OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).y);
+        }
+        if (m_Goalie)
+        {
+            step = m_Speed * Time.deltaTime * Mathf.Abs(OVRInput.Get(OVRInput.RawAxis2D.RThumbstick).x);
+        }
         transform.position = Vector3.MoveTowards(transform.position, point.position, step);
     }
 
     void Rotation()
     {
-        if (OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).x > .01f) //Rotate Around
+        if (m_ActivePlayer)
         {
-            transform.Rotate(Vector3.up * Time.deltaTime * m_TurningSpeed * Input.GetAxis("Horizontal"));
+            if (OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).x > .01f) //Rotate Around
+            {
+                transform.Rotate(Vector3.up * Time.deltaTime * m_TurningSpeed * OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).x);
+            }
+            else if (OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).x < -.01f)
+            {
+                transform.Rotate(Vector3.down * Time.deltaTime * m_TurningSpeed * Mathf.Abs(OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).x));
+            }
         }
-        else if (OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).x < -.01f)
+
+        if (m_Goalie)
         {
-            transform.Rotate(Vector3.down * Time.deltaTime * m_TurningSpeed * Mathf.Abs(Input.GetAxis("Horizontal")));
+            if (OVRInput.Get(OVRInput.RawAxis2D.RThumbstick).y > .01f) //Rotate Around
+            {
+                transform.Rotate(Vector3.up * Time.deltaTime * m_TurningSpeed * OVRInput.Get(OVRInput.RawAxis2D.RThumbstick).y);
+            }
+            else if (OVRInput.Get(OVRInput.RawAxis2D.RThumbstick).y < -.01f)
+            {
+                transform.Rotate(Vector3.down * Time.deltaTime * m_TurningSpeed * Mathf.Abs(OVRInput.Get(OVRInput.RawAxis2D.RThumbstick).y));
+            }
         }
     }
 
@@ -129,8 +171,6 @@ public class PlayerControls : MonoBehaviour
             CameraManagement.inst.FollowPuck(m_Puck);
             m_Puck.GetComponent<PuckControls>().Hitting();
             Vector3 dirForShooting = ((m_AimingArc.GetComponent<AimingControls>().m_Direction.position - transform.position) * m_Thurst);
-            Debug.Log(dirForShooting);
-            Debug.Log(m_AimingArc.GetComponent<AimingControls>().m_Direction.position);
             m_Puck.GetComponent<Rigidbody>().AddForce(dirForShooting.x, 500, dirForShooting.z);
             m_AimingArc.SetActive(false);
             m_Puck = null;
@@ -203,6 +243,46 @@ public class PlayerControls : MonoBehaviour
                 if (m_Passing)
                     m_Passing = false;
                 m_AimingArc.SetActive(false);
+            }
+        }
+    }
+
+
+
+
+
+    void GoalieMovement()
+    {
+        GetInputForMovement();
+
+
+        switch (m_directionToMove)
+        {
+            case DirectionToMove.Forward:
+                MoveToPoint(m_Waypoints[m_NextWaypoint]);
+                break;
+            case DirectionToMove.Back:
+                MoveToPoint(m_Waypoints[m_LastWaypoint]);
+                break;
+            case DirectionToMove.Stop:
+                //Don't Do Anything
+                break;
+        }
+
+        if (transform.position == m_Waypoints[m_NextWaypoint].position) //Switch waypoints, allowing us to move on curves
+        {
+            if (m_NextWaypoint < m_WaypointsTotal - 1)
+            {
+                m_LastWaypoint++;
+                m_NextWaypoint++;
+            }
+        }
+        else if (transform.position == m_Waypoints[m_LastWaypoint].position)
+        {
+            if (m_LastWaypoint > 0)
+            {
+                m_LastWaypoint--;
+                m_NextWaypoint--;
             }
         }
     }

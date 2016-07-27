@@ -11,6 +11,11 @@ public class PuckControls : MonoBehaviour
     public float m_Distance;
     public int m_Player;
 
+    void Start()
+    {
+        m_Players = PlayerManagement.inst.m_RedTeam;
+    }
+
     public void Hitting()
     {
         m_Owned = false;
@@ -35,7 +40,7 @@ public class PuckControls : MonoBehaviour
                 }
             }
         }
-        //m_Players[m_Player].GetComponent<PlayerControls>().m_ActivePlayer = true;
-        //CameraManagement.inst.FollowPlayer(m_Players[m_Player]);
+        m_Players[m_Player].GetComponent<PlayerControls>().m_ActivePlayer = true;
+        CameraManagement.inst.FollowPlayer(m_Players[m_Player]);
     }
 }

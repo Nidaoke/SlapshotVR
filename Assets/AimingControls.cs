@@ -10,7 +10,7 @@ public class AimingControls : MonoBehaviour
     public GameObject m_AimLeft;
     public GameObject m_AimRight;
     public Transform m_Direction;
-    Transform m_AimTarget;
+    public Transform m_AimTarget;
     bool m_Passing;
 
     public void Passing()
@@ -39,13 +39,20 @@ public class AimingControls : MonoBehaviour
     {
         if (m_Passing)
         {
-            if (m_AimingEnd.transform.position == m_AimRight.transform.position)
-                m_AimTarget = m_AimLeft.transform;
-
-            if (m_AimingEnd.transform.position == m_AimLeft.transform.position)
+            if (m_AimingEnd.transform.position.x < 4.4F)
+            {
                 m_AimTarget = m_AimRight.transform;
+                Debug.Log("Go Left");
+            }
+
+            if (m_AimingEnd.transform.position.x > -4.4F)
+            {
+                m_AimTarget = m_AimLeft.transform;
+                Debug.Log("Go Right");
+            }
 
             m_AimingEnd.transform.position = Vector3.Lerp(m_AimingEnd.transform.position, m_AimTarget.position, Time.deltaTime * m_AimingSpeed);
+            Debug.Log(m_AimTarget.position);
             m_AimStart.GetComponent<LineRenderer>().SetPosition(1, m_AimingEnd.transform.position);
         }
     }
