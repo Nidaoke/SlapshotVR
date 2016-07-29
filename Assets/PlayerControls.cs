@@ -170,7 +170,7 @@ public class PlayerControls : MonoBehaviour
             m_Puck.transform.parent = null;
             CameraManagement.inst.FollowPuck(m_Puck);
             m_Puck.GetComponent<PuckControls>().Hitting();
-            Vector3 dirForShooting = ((m_AimingArc.GetComponent<AimingControls>().m_Direction.position - transform.position) * m_Thurst);
+            Vector3 dirForShooting = ((m_AimingArc.GetComponent<AimingControls>().m_Direction.position - m_AimingArc.GetComponent<AimingControls> ().m_AimStart.transform.position) * m_Thurst);
             m_Puck.GetComponent<Rigidbody>().AddForce(dirForShooting.x, 500, dirForShooting.z);
             m_AimingArc.SetActive(false);
             m_Puck = null;

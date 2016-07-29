@@ -18,6 +18,7 @@ public class AimingControls : MonoBehaviour
         if (!m_Passing)
         {
             m_Passing = true;
+            m_Direction = m_AimingEnd.transform;
             m_AimStart.SetActive(true);
             m_AimStart.GetComponent<LineRenderer>().SetPosition(0, m_AimStart.transform.position);
             m_AimStart.GetComponent<LineRenderer>().SetPosition(1, m_AimingEnd.transform.position);
@@ -28,6 +29,7 @@ public class AimingControls : MonoBehaviour
         }
         else
         {
+            Debug.Log("Activate Pass");
             m_Direction = m_AimingEnd.transform;
             m_Passing = false;
             m_AimStart.SetActive(false);
@@ -39,21 +41,22 @@ public class AimingControls : MonoBehaviour
     {
         if (m_Passing)
         {
-            if (m_AimingEnd.transform.position.x < 4.4F)
+
+            if (m_AimingEnd.transform.localPosition.x > 4.4F)
             {
                 m_AimTarget = m_AimRight.transform;
-                Debug.Log("Go Left");
-            }
-
-            if (m_AimingEnd.transform.position.x > -4.4F)
-            {
-                m_AimTarget = m_AimLeft.transform;
                 Debug.Log("Go Right");
             }
 
+            if (m_AimingEnd.transform.localPosition.x < -4.4F)
+            {
+                m_AimTarget = m_AimLeft.transform;
+                Debug.Log("Go Left");
+            }
+
             m_AimingEnd.transform.position = Vector3.Lerp(m_AimingEnd.transform.position, m_AimTarget.position, Time.deltaTime * m_AimingSpeed);
-            Debug.Log(m_AimTarget.position);
             m_AimStart.GetComponent<LineRenderer>().SetPosition(1, m_AimingEnd.transform.position);
+            m_AimStart.GetComponent<LineRenderer>().SetPosition(0, m_AimStart.transform.position);
         }
     }
 }
