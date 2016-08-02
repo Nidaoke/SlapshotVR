@@ -23,6 +23,15 @@ public class PuckControls : MonoBehaviour
         StartCoroutine(Reposition());
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "GoalScanner")
+        {
+            if (!GameManagerment.inst.goalScored)
+                GameManagerment.inst.GoalScored();
+        }
+    }
+
     IEnumerator Reposition()
     {
         yield return new WaitForSeconds(3);
@@ -40,8 +49,10 @@ public class PuckControls : MonoBehaviour
                 }
             }
 
-            m_Players[m_Player].GetComponent<PlayerControls>().m_ActivePlayer = true;
-            CameraManagement.inst.FollowPlayer(m_Players[m_Player]);
+            if (!GameManagerment.inst.goalScored) {
+                m_Players[m_Player].GetComponent<PlayerControls>().m_ActivePlayer = true;
+                CameraManagement.inst.FollowPlayer(m_Players[m_Player]);
+            }
         }
     }
 }
