@@ -20,6 +20,7 @@ public class PuckControls : MonoBehaviour
     {
         m_Owned = false;
         m_Distance = Mathf.Infinity;
+        StopCoroutine(Reposition());
         StartCoroutine(Reposition());
     }
 
