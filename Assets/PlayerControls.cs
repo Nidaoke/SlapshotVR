@@ -168,6 +168,7 @@ public class PlayerControls : MonoBehaviour
             StartCoroutine(CoolDownShot());
             m_AimingArc.GetComponent<AimingControls>().Passing();
             m_Puck.transform.parent = null;
+            m_Puck.GetComponent<Rigidbody>().isKinematic = false;
             CameraManagement.inst.FollowPuck(m_Puck);
             m_Puck.GetComponent<PuckControls>().Hitting();
             Vector3 dirForShooting = ((m_AimingArc.GetComponent<AimingControls>().m_Direction.position - m_AimingArc.GetComponent<AimingControls> ().m_AimStart.transform.position) * m_Thurst);
@@ -229,12 +230,12 @@ public class PlayerControls : MonoBehaviour
                     m_Puck.transform.parent = this.transform;
                     m_Puck.transform.position = m_PuckSpot.transform.position;
                     m_Puck.GetComponent<Rigidbody>().isKinematic = true;
-                    m_Puck.GetComponent<Rigidbody>().isKinematic = false;
                     m_Puck.GetComponent<PuckControls>().m_Owned = true;
                     m_AimingArc.SetActive(true);
                 }
             }
-        }
+        }else
+        m_Puck.GetComponent<PuckControls> ().m_Owned = false;
 
         if (OVRInput.GetUp(OVRInput.RawButton.A))
         {
