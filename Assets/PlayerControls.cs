@@ -12,6 +12,7 @@ public class PlayerControls : MonoBehaviour
     public DirectionToMove m_directionToMove;
     public int m_NextWaypoint;
     public int m_LastWaypoint;
+    public bool freezeUpandDown, reverseMovement;
 
     // Adjustable speeds
     public float m_Speed;
@@ -56,18 +57,34 @@ public class PlayerControls : MonoBehaviour
     {
         GetInputForMovement();
 
-
-        switch (m_directionToMove)
+        if (!reverseMovement)
         {
-            case DirectionToMove.Forward:
-                MoveToPoint(m_Waypoints[m_NextWaypoint]);
-                break;
-            case DirectionToMove.Back:
-                MoveToPoint(m_Waypoints[m_LastWaypoint]);
-                break;
-            case DirectionToMove.Stop:
-                //Don't Do Anything
-                break;
+            switch (m_directionToMove)
+            {
+                case DirectionToMove.Forward:
+                    MoveToPoint(m_Waypoints[m_NextWaypoint]);
+                    break;
+                case DirectionToMove.Back:
+                    MoveToPoint(m_Waypoints[m_LastWaypoint]);
+                    break;
+                case DirectionToMove.Stop:
+                    //Don't Do Anything
+                    break;
+            }
+        }else
+        {
+            switch (m_directionToMove)
+            {
+                case DirectionToMove.Back:
+                    MoveToPoint(m_Waypoints[m_NextWaypoint]);
+                    break;
+                case DirectionToMove.Forward:
+                    MoveToPoint(m_Waypoints[m_LastWaypoint]);
+                    break;
+                case DirectionToMove.Stop:
+                    //Don't Do Anything
+                    break;
+            }
         }
 
         if (transform.position == m_Waypoints[m_NextWaypoint].position) //Switch waypoints, allowing us to move on curves
@@ -92,10 +109,15 @@ public class PlayerControls : MonoBehaviour
     {
         if (m_ActivePlayer)
         {
-            if (OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).y > .2f)
-                m_directionToMove = DirectionToMove.Forward;
-            else if (OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).y < -.2f)
-                m_directionToMove = DirectionToMove.Back;
+            if (!freezeUpandDown)
+            {
+                if (OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).y > .2f)
+                    m_directionToMove = DirectionToMove.Forward;
+                else if (OVRInput.Get(OVRInput.RawAxis2D.LThumbstick).y < -.2f)
+                    m_directionToMove = DirectionToMove.Back;
+                else
+                    m_directionToMove = DirectionToMove.Stop;
+            }
             else
                 m_directionToMove = DirectionToMove.Stop;
         }
@@ -215,6 +237,9 @@ public class PlayerControls : MonoBehaviour
     void GrabPuck()
     {
 
+        if (m_Puck == null)
+            freezeUpandDown = false;
+
         if (m_Puck == null && m_AimingArc.activeSelf)
             m_AimingArc.SetActive(false);
 
@@ -225,6 +250,7 @@ public class PlayerControls : MonoBehaviour
             {
                 if (m_ActivePlayer && !m_Cooldown)
                 {
+                    freezeUpandDown = true;
                     // The puck was there, lets stick it to us.
                     m_Puck = m_CollidingPuck;
                     m_Puck.transform.parent = this.transform;
@@ -242,6 +268,7 @@ public class PlayerControls : MonoBehaviour
             if (m_ActivePlayer && !m_Cooldown)
             {
                 // We let go of the Puck.
+                freezeUpandDown = false;
                 if (m_Puck != null)
                 {
                     m_Puck.transform.parent = null;
