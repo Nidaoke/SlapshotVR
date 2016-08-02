@@ -234,8 +234,8 @@ public class PlayerControls : MonoBehaviour
                     m_AimingArc.SetActive(true);
                 }
             }
-        }else
-        m_Puck.GetComponent<PuckControls> ().m_Owned = false;
+        }else if(m_Puck != null)
+            m_Puck.GetComponent<PuckControls> ().m_Owned = false;
 
         if (OVRInput.GetUp(OVRInput.RawButton.A))
         {
