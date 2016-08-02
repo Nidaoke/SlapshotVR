@@ -21,7 +21,7 @@ public class PlayerControls : MonoBehaviour
     // Game variables
     public bool m_ActivePlayer;
     public bool m_Goalie;
-    GameObject m_Puck;
+    public GameObject m_Puck;
     public GameObject m_CollidingPuck;
     public GameObject m_PuckSpot;
     public GameObject m_AimingArc;
@@ -213,6 +213,10 @@ public class PlayerControls : MonoBehaviour
     }
     void GrabPuck()
     {
+
+        if (m_Puck == null && m_AimingArc.activeSelf)
+            m_AimingArc.SetActive(false);
+
         if (OVRInput.Get(OVRInput.RawButton.A))
         {
             // We tried to grab the Puck
@@ -224,6 +228,8 @@ public class PlayerControls : MonoBehaviour
                     m_Puck = m_CollidingPuck;
                     m_Puck.transform.parent = this.transform;
                     m_Puck.transform.position = m_PuckSpot.transform.position;
+                    m_Puck.GetComponent<Rigidbody>().isKinematic = true;
+                    m_Puck.GetComponent<Rigidbody>().isKinematic = false;
                     m_Puck.GetComponent<PuckControls>().m_Owned = true;
                     m_AimingArc.SetActive(true);
                 }

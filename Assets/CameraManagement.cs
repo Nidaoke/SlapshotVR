@@ -1,6 +1,7 @@
 ﻿/* Created by Dean Day 26/07/2016
  * Greenlight Games Ltd
  * Working with Forever Humble PDX
+ * Stolen by Jonathan Cunningham
 */
 using UnityEngine;
 using System.Collections;
@@ -16,8 +17,8 @@ public class CameraManagement : Singleton.Manager<CameraManagement>
 
     public void FollowPuck(GameObject Puck)
     {
-        if (!m_Lerp)
-            m_Follow.GetComponent<PlayerControls>().m_ActivePlayer = false;
+        //if (!m_Lerp)
+            //m_Follow.GetComponent<PlayerControls>().m_ActivePlayer = false;
 
         m_Follow = Puck;
         m_Lerp = true;
@@ -25,8 +26,8 @@ public class CameraManagement : Singleton.Manager<CameraManagement>
 
     public void FollowPlayer(GameObject Player)
     {
-        if (!m_Lerp)
-            m_Follow.GetComponent<PlayerControls>().m_ActivePlayer = false;
+        //if (!m_Lerp)
+            //m_Follow.GetComponent<PlayerControls>().m_ActivePlayer = false;
 
         m_Follow = Player;
         m_Lerp = false;
