@@ -69,6 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\AIPlayer.cs" />
     <Compile Include="Assets\AimingControls.cs" />
     <Compile Include="Assets\CameraManagement.cs" />
     <Compile Include="Assets\OVR\Moonlight\Scripts\OVRDebugHeadController.cs" />
