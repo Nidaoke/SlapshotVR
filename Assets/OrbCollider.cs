@@ -17,6 +17,14 @@ public class OrbCollider : MonoBehaviour {
             }
         }
     }
+
+    void OnTriggerExit(Collider other)
+    {
+        if(other.gameObject.tag == "Puck")
+        {
+            playerToFollow.GetComponent<PlayerControls>().m_ActivePlayer = false;
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {

@@ -48,13 +48,13 @@ public class AimingControls : MonoBehaviour
         if (m_Passing)
         {
 
-            if (m_AimingEnd.transform.localPosition.x > 9F)
+            if (m_AimingEnd.transform.localPosition.x > 13F)
             {
                 m_AimTarget = m_AimRight.transform;
                 Debug.Log("Go Right");
             }
 
-            if (m_AimingEnd.transform.localPosition.x < -9F)
+            if (m_AimingEnd.transform.localPosition.x < -13F)
             {
                 m_AimTarget = m_AimLeft.transform;
                 Debug.Log("Go Left");
