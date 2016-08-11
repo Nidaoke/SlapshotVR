@@ -8,12 +8,20 @@ public class PuckControls : MonoBehaviour
     public Vector3 m_LastTrans;
     public bool m_Owned;
     public List<GameObject> m_Players = PlayerManagement.inst.m_RedTeam;
+    public Transform[] m_EnemyPlayers;
     public float m_Distance;
     public int m_Player;
+
+    public Transform nearestPlayer1, nearestPlayer2;
 
     void Start()
     {
         m_Players = PlayerManagement.inst.m_RedTeam;
+    }
+
+    void Update()
+    {
+        nearestPlayer1 = GetClosestEnemy(m_EnemyPlayers);
     }
 
     public void Hitting()
@@ -31,6 +39,23 @@ public class PuckControls : MonoBehaviour
             if (!GameManagerment.inst.goalScored)
                 GameManagerment.inst.GoalScored();
         }
+    }
+
+    Transform GetClosestEnemy(Transform[] enemies)
+    {
+        Transform tMin = null;
+        float minDist = Mathf.Infinity;
+        Vector3 currentPos = transform.position;
+        foreach (Transform t in enemies)
+        {
+            float dist = Vector3.Distance(t.position, currentPos);
+            if (dist < minDist)
+            {
+                tMin = t;
+                minDist = dist;
+            }
+        }
+        return tMin;
     }
 
     IEnumerator Reposition()

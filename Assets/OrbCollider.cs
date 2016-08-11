@@ -22,7 +22,7 @@ public class OrbCollider : MonoBehaviour {
     {
         if(other.gameObject.tag == "Puck")
         {
-            playerToFollow.GetComponent<PlayerControls>().m_ActivePlayer = false;
+            //playerToFollow.GetComponent<PlayerControls>().m_ActivePlayer = false;
         }
     }
 	

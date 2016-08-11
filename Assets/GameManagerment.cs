@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class GameManagerment : Singleton.Manager<GameManagerment> {
 
     public bool goalScored;
+    public AudioSource buzzer;
     [SerializeField] private GameObject cameraText;
 
     public void GoalScored()
@@ -14,6 +15,7 @@ public class GameManagerment : Singleton.Manager<GameManagerment> {
         {
             goalScored = true;
             cameraText.GetComponent<Text>().text = "Goal Scored!";
+            buzzer.Play();
         }
     }
 }

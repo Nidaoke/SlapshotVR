@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿ using UnityEngine;
 using System.Collections;
 
 public class AIPlayer : MonoBehaviour
@@ -40,12 +40,17 @@ public class AIPlayer : MonoBehaviour
             if (Vector3.Distance(m_Waypoints[m_NextWaypoint].transform.position, m_Puck.transform.position) < 10F)
             {
                 // Puck is close to forward
+                //Debug.Log("MoveTrue!");
                 MoveTowardsPuck(true);
+            }else
+            {
+                //Debug.Log("Don't Move!");
             }
 
             if (Vector3.Distance(m_Waypoints[m_LastWaypoint].transform.position, m_Puck.transform.position) < 10F)
             {
                 // Puck is close to back
+                //Debug.Log("MoveFalse!");
                 MoveTowardsPuck(false);
             }
         }
